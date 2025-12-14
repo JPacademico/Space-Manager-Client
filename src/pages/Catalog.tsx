@@ -20,7 +20,6 @@ export function Catalog() {
   const handleBook = async () => {
     if (!selectedSpace) return;
     
-    // Optional: Add a loading toast
     const loadingToast = toast.loading('Processando reserva...');
 
     try {
@@ -42,64 +41,78 @@ export function Catalog() {
       const message = err.response?.data?.message || 'Erro desconhecido.';
 
       toast.error(message, {
-        style: { border: '1px solid #EF4444', color: '#B91C1C' } // Optional styling
+        style: { border: '1px solid #EF4444', color: '#B91C1C' }
       });
     }
   };
 
   return (
-    <div className="p-8">
+    // UPDATED: p-4 for mobile, p-8 for desktop
+    <div className="p-4 md:p-8">
       <h1 className="text-3xl font-bold mb-6">Espaços Disponíveis</h1>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* UPDATED: 1 col mobile, 2 cols tablet, 3 cols desktop */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {spaces.map((space) => (
-          <div key={space.id} className="border p-4 rounded-lg shadow hover:shadow-lg transition">
+          <div key={space.id} className="border rounded-lg shadow hover:shadow-lg transition overflow-hidden bg-white">
             <div className="h-48 w-full bg-gray-200">
               <img 
-              src={space.imageUrl || "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80"} 
-              alt={space.name}
-              className="w-full h-full object-cover"
+                src={space.imageUrl || "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80"} 
+                alt={space.name}
+                className="w-full h-full object-cover"
               />
             </div>
+            
             <div className="p-4">
-            <h2 className="text-xl font-bold">{space.name}</h2>
-            <p className="text-gray-500">{space.type}</p>
-            <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
-              <Users size={16} /> <span>Capacidade: {space.capacity}</span>
-            </div>
-            </div>
-            {/* Botão de Reservar ou Formulário */}
-            {selectedSpace === space.id ? (
-              <div className="mt-4 bg-gray-50 p-3 rounded">
-                <label className="block text-sm">Data Início:</label>
-                <input 
-                  type="date" 
-                  className="border p-1 w-full mb-2"
-                  onChange={e => setStartDate(e.target.value)} 
-                />
-                <label className="block text-sm">Semanas:</label>
-                <input 
-                  type="number" 
-                  min="1" 
-                  value={weeks} 
-                  className="border p-1 w-full mb-2"
-                  onChange={e => setWeeks(Number(e.target.value))} 
-                />
-                <button 
-                  onClick={handleBook}
-                  className="bg-green-600 text-white w-full py-1 rounded"
-                >
-                  Confirmar
-                </button>
+              <h2 className="text-xl font-bold">{space.name}</h2>
+              <p className="text-gray-500">{space.type}</p>
+              <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
+                <Users size={16} /> <span>Capacidade: {space.capacity}</span>
               </div>
-            ) : (
-              <button 
-                onClick={() => setSelectedSpace(space.id)}
-                className="mt-4 w-full bg-blue-600 text-white py-2 rounded flex items-center justify-center gap-2"
-              >
-                <Calendar size={18} /> Solicitar Reserva
-              </button>
-            )}
+
+              {/* Botão de Reservar ou Formulário */}
+              {selectedSpace === space.id ? (
+                <div className="mt-4 bg-gray-50 p-3 rounded animate-in fade-in slide-in-from-top-2 duration-200">
+                  <label className="block text-sm font-medium mb-1">Data Início:</label>
+                  <input 
+                    type="date" 
+                    className="border p-2 w-full mb-3 rounded"
+                    onChange={e => setStartDate(e.target.value)} 
+                  />
+                  
+                  <label className="block text-sm font-medium mb-1">Semanas:</label>
+                  <input 
+                    type="number" 
+                    min="1" 
+                    value={weeks} 
+                    className="border p-2 w-full mb-4 rounded"
+                    onChange={e => setWeeks(Number(e.target.value))} 
+                  />
+                  
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => setSelectedSpace(null)}
+                      className="bg-gray-200 text-gray-700 flex-1 py-2 rounded hover:bg-gray-300 transition"
+                    >
+                      Cancelar
+                    </button>
+                    <button 
+                      onClick={handleBook}
+                      className="bg-green-600 text-white flex-1 py-2 rounded hover:bg-green-700 transition font-medium"
+                    >
+                      Confirmar
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button 
+                  onClick={() => setSelectedSpace(space.id)}
+                  className="mt-4 w-full bg-blue-600 text-white py-2 rounded flex items-center justify-center gap-2 hover:bg-blue-700 transition"
+                >
+                  <Calendar size={18} /> Solicitar Reserva
+                </button>
+              )}
+            </div>
           </div>
         ))}
       </div>
