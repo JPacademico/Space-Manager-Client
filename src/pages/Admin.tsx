@@ -36,6 +36,20 @@ export function Admin() {
     }
   };
 
+  const handleReject = async (id: string) => {
+    if(!confirm("Tem certeza que deseja rejeitar/excluir este pedido?")) return;
+    
+    try {
+      await bookingService.reject(id);
+      toast.success('Pedido removido.');
+      loadPending();
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      console.log(err)
+      toast.error('Erro ao remover.');
+    }
+  };
+
   const handleCreateSpace = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -135,7 +149,7 @@ export function Admin() {
                   >
                     <CheckCircle />
                   </button>
-                  <button className="text-red-600 hover:text-red-800 bg-red-50 p-2 rounded-full" title="Rejeitar">
+                  <button onClick={() => handleReject(booking.id)} className="text-red-600 hover:text-red-800 bg-red-50 p-2 rounded-full" title="Rejeitar">
                     <XCircle />
                   </button>
                 </td>

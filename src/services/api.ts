@@ -20,4 +20,6 @@ export const bookingService = {
   approve: (id: string) => api.patch(`/bookings/${id}/approve`),
   
   getMyAppointments: () => api.get(`/bookings/my-appointments`),
+
+  reject: (id: string) => api.delete(`/bookings/${id}`),
 };
