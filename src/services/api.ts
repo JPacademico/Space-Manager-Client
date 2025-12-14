@@ -7,6 +7,8 @@ export const api = axios.create({
 
 export const spaceService = {
   getAll: () => api.get('/spaces'),
+  create: (data: { name: string; type: string; capacity: number; description: string, imageUrl?: string; }) => 
+    api.post('/spaces', data),
 };
 
 export const bookingService = {

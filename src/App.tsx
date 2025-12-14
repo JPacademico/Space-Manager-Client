@@ -6,12 +6,15 @@ import { MyAppointments } from './pages/MyAppointments';
 import { Login } from './pages/Login';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
+import { Register } from './pages/Register';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   
   return (
     <BrowserRouter>
       <div className="min-h-screen flex flex-col bg-gray-50">
+      <Toaster position="top-center" reverseOrder={false} />
         
         <Header />
 
@@ -22,6 +25,7 @@ function App() {
             <Route path="/my-appointments" element={<MyAppointments />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
         </main>
 

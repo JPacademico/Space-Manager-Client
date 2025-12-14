@@ -4,6 +4,7 @@ export interface Space {
     type: string;
     capacity: number;
     description?: string;
+    imageUrl?: string | null;
 }
 
 export interface Booking {

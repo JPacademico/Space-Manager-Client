@@ -19,24 +19,17 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    // 1. LAZY INITIALIZATION
-    // We pass a function to useState. React runs this ONLY once on startup.
     const [user, setUser] = useState<User | null>(() => {
       const token = localStorage.getItem('token');
       const savedUser = localStorage.getItem('user');
   
       if (token && savedUser) {
-        // If we find data, we configure the API immediately
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        // And return the user as the initial state
         return JSON.parse(savedUser);
       }
       
       return null; // Default state if nothing found
     });
-  
-    // 2. We don't need the useEffect anymore! 
-    // Because the state is already correct from the very first moment.
   
     const login = (token: string, userData: User) => {
       localStorage.setItem('token', token);

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 export function Login() {
   const [email, setEmail] = useState('');
@@ -14,7 +14,7 @@ export function Login() {
     try {
       const res = await api.post('/auth/login', { email, password });
       login(res.data.access_token, res.data.user);
-      navigate('/'); // Go to Home
+      navigate('/');
     } catch (error) {
       console.log(error);
       alert('Login Failed');
@@ -39,6 +39,12 @@ export function Login() {
           onChange={e => setPassword(e.target.value)}
         />
         <button className="w-full bg-blue-600 text-white p-2 rounded">Entrar</button>
+        <div className="mt-4 text-center text-sm text-gray-600">
+          Não tem uma conta?{' '}
+          <Link to="/register" className="text-blue-600 font-bold hover:underline">
+            Crie agora
+          </Link>
+        </div>
       </form>
     </div>
   );

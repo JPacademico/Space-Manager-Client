@@ -3,6 +3,7 @@ import { bookingService, spaceService } from '../services/api';
 import type { Space } from '../types';
 import { Calendar, Users } from 'lucide-react';
 import { AxiosError } from 'axios';
+import toast from 'react-hot-toast';
 
 export function Catalog() {
   const [spaces, setSpaces] = useState<Space[]>([]);
@@ -18,22 +19,31 @@ export function Catalog() {
 
   const handleBook = async () => {
     if (!selectedSpace) return;
+    
+    // Optional: Add a loading toast
+    const loadingToast = toast.loading('Processando reserva...');
+
     try {
       await bookingService.create({
         spaceId: selectedSpace,
         startDate: startDate,
         durationWeeks: Number(weeks)
       });
-      alert('Solicitação enviada! Aguarde a aprovação do Admin.');
+      
+      toast.dismiss(loadingToast);
+      toast.success('Solicitação enviada! Aguarde aprovação.', { duration: 4000 });
+      
       setSelectedSpace(null);
     } catch (error) {
+      
+      toast.dismiss(loadingToast);
+      
       const err = error as AxiosError<{ message: string }>;
+      const message = err.response?.data?.message || 'Erro desconhecido.';
 
-      if (err.response && err.response.data) {
-        alert(`Erro: ${err.response.data.message}`);
-      } else {
-        alert('Erro desconhecido ao tentar reservar.');
-      }
+      toast.error(message, {
+        style: { border: '1px solid #EF4444', color: '#B91C1C' } // Optional styling
+      });
     }
   };
 
@@ -44,12 +54,20 @@ export function Catalog() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {spaces.map((space) => (
           <div key={space.id} className="border p-4 rounded-lg shadow hover:shadow-lg transition">
+            <div className="h-48 w-full bg-gray-200">
+              <img 
+              src={space.imageUrl || "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80"} 
+              alt={space.name}
+              className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="p-4">
             <h2 className="text-xl font-bold">{space.name}</h2>
             <p className="text-gray-500">{space.type}</p>
             <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
               <Users size={16} /> <span>Capacidade: {space.capacity}</span>
             </div>
-            
+            </div>
             {/* Botão de Reservar ou Formulário */}
             {selectedSpace === space.id ? (
               <div className="mt-4 bg-gray-50 p-3 rounded">
