@@ -63,16 +63,17 @@ export function Admin() {
   };
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    // UPDATED: p-4 for mobile, p-8 for desktop
+    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-red-600">Painel Administrativo</h1>
         
         {/* Toggle Button */}
         <button 
           onClick={() => setShowForm(!showForm)}
-          className="bg-slate-800 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-slate-700"
+          className="bg-slate-800 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-slate-700 transition"
         >
-          <Plus size={18} /> {showForm ? 'Fechar Formulário' : 'Novo Espaço'}
+          <Plus size={18} /> {showForm ? 'Fechar' : 'Novo Espaço'}
         </button>
       </div>
 
@@ -82,6 +83,7 @@ export function Admin() {
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
             <Layout size={20} /> Cadastrar Nova Sala
           </h2>
+          {/* Grid handles 1 col on mobile, 2 on desktop automatically */}
           <form onSubmit={handleCreateSpace} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input 
               placeholder="Nome da Sala (ex: Lab Química)" 
@@ -113,7 +115,7 @@ export function Admin() {
               value={image} 
               onChange={e => setImage(e.target.value)}
             />
-            <button className="bg-green-600 text-white py-2 rounded md:col-span-2 hover:bg-green-700 font-bold">
+            <button className="bg-green-600 text-white py-2 rounded md:col-span-2 hover:bg-green-700 font-bold transition">
               Salvar Espaço
             </button>
           </form>
@@ -123,43 +125,47 @@ export function Admin() {
       {/* --- PENDING BOOKINGS TABLE --- */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="p-4 border-b bg-gray-50 font-bold text-gray-700">Solicitações Pendentes</div>
-        <table className="w-full text-left">
-          <thead className="bg-gray-100 border-b">
-            <tr>
-              <th className="p-4">Usuário</th>
-              <th className="p-4">Sala</th>
-              <th className="p-4">Datas</th>
-              <th className="p-4">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pending.map(booking => (
-              <tr key={booking.id} className="border-b hover:bg-gray-50">
-                <td className="p-4">{booking.user?.email}</td>
-                <td className="p-4 font-medium">{booking.space?.name}</td>
-                <td className="p-4 text-sm text-gray-600">
-                  {new Date(booking.startDate).toLocaleDateString()} <br/>
-                   até {new Date(booking.endDate).toLocaleDateString()}
-                </td>
-                <td className="p-4">
-                  <button 
-                    onClick={() => handleApprove(booking.id)}
-                    className="text-green-600 hover:text-green-800 mr-4 bg-green-50 p-2 rounded-full"
-                    title="Aprovar"
-                  >
-                    <CheckCircle />
-                  </button>
-                  <button onClick={() => handleReject(booking.id)} className="text-red-600 hover:text-red-800 bg-red-50 p-2 rounded-full" title="Rejeitar">
-                    <XCircle />
-                  </button>
-                </td>
+        
+        {/* UPDATED: Wrapper for horizontal scrolling on mobile */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left min-w-[600px]">
+            <thead className="bg-gray-100 border-b">
+              <tr>
+                <th className="p-4">Usuário</th>
+                <th className="p-4">Sala</th>
+                <th className="p-4">Datas</th>
+                <th className="p-4">Ações</th>
               </tr>
-            ))}
-            {pending.length === 0 && (
-              <tr><td colSpan={4} className="p-8 text-center text-gray-500">Nada pendente por aqui.</td></tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {pending.map(booking => (
+                <tr key={booking.id} className="border-b hover:bg-gray-50">
+                  <td className="p-4">{booking.user?.email}</td>
+                  <td className="p-4 font-medium">{booking.space?.name}</td>
+                  <td className="p-4 text-sm text-gray-600">
+                    {new Date(booking.startDate).toLocaleDateString()} <br/>
+                     até {new Date(booking.endDate).toLocaleDateString()}
+                  </td>
+                  <td className="p-4">
+                    <button 
+                      onClick={() => handleApprove(booking.id)}
+                      className="text-green-600 hover:text-green-800 mr-4 bg-green-50 p-2 rounded-full transition"
+                      title="Aprovar"
+                    >
+                      <CheckCircle />
+                    </button>
+                    <button onClick={() => handleReject(booking.id)} className="text-red-600 hover:text-red-800 bg-red-50 p-2 rounded-full transition" title="Rejeitar">
+                      <XCircle />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {pending.length === 0 && (
+                <tr><td colSpan={4} className="p-8 text-center text-gray-500">Nada pendente por aqui.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
