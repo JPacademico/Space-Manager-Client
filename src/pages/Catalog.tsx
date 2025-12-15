@@ -14,7 +14,17 @@ export function Catalog() {
   const [weeks, setWeeks] = useState(1);
 
   useEffect(() => {
-    spaceService.getAll().then((res) => setSpaces(res.data));
+    spaceService.getAll()
+      .then((res) => {
+        // Garante que só salvamos se for array
+        if (Array.isArray(res.data)) {
+          setSpaces(res.data);
+        } else {
+          console.error("Recebemos algo que não é lista:", res.data);
+          toast.error("Erro ao conectar com Ngrok");
+        }
+      })
+      .catch(err => console.error(err));
   }, []);
 
   const handleBook = async () => {
@@ -53,7 +63,7 @@ export function Catalog() {
       
       {/* UPDATED: 1 col mobile, 2 cols tablet, 3 cols desktop */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {spaces.map((space) => (
+        {Array.isArray(spaces) && spaces.map((space) => (
           <div key={space.id} className="border rounded-lg shadow hover:shadow-lg transition overflow-hidden bg-white">
             <div className="h-48 w-full bg-gray-200">
               <img 
@@ -115,6 +125,11 @@ export function Catalog() {
             </div>
           </div>
         ))}
+        {(!Array.isArray(spaces) || spaces.length === 0) && (
+          <div className="col-span-3 text-center text-gray-500 py-10">
+            <p>Nenhuma sala encontrada ou erro de conexão.</p>
+          </div>
+        )}
       </div>
     </div>
   );
