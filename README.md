@@ -11,3 +11,14 @@ A responsive interface built with **React (Vite)**, **TypeScript**, and **Tailwi
 ```bash
 npm install
 npm run dev
+
+## Some accounts for testing
+
+admin@master.com (admin account)
+123456
+
+pitico@user.com
+123456
+
+thales@user.com
+123456
